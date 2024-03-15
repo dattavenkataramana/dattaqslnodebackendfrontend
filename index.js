@@ -41,8 +41,8 @@ app.get("/login/", async (req, res) => {
 app.post('/login/', async (req, res) => {
   try {
     const { name, password } = req.body;
-    const query = 'SELECT * FROM login WHERE name = ? AND password = ?';
-    const user = await db.get(query, [name, password]);
+    const query = 'INSERT INTO login(username,password) VALUES(?,?)';
+    const user = await db.run(query, [name, password]);
     if (user) {
       res.status(200).send('Login successful!');
     } else {
