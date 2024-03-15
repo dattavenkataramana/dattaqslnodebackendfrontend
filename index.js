@@ -30,33 +30,29 @@ initializeDbAndServer();
 
 // GET API
 app.get("/login/", async (req, res) => {
-  
-    const getQueryDatta = "SELECT * FROM  login";
-    const datas = await db.all(getQueryDatta);
-
-    res.send(datas);
-});
-
-//POST API
-app.post('/login/', async (req, res) => {
   try {
-    const { name, password } = req.body;
-    const query = 'INSERT INTO login(username,password) VALUES(?,?)';
-    const user = await db.run(query, [name, password]);
-    if (user) {
-      res.status(200).send('Login successful!');
-    } else {
-      res.status(401).send('Invalid username or password');
-    }
+    const getQueryData = "SELECT * FROM login";
+    const datas = await db.all(getQueryData);
+    res.send(datas);
   } catch (error) {
     console.error('Error:', error);
     res.status(500).send('Internal server error');
   }
 });
 
-
-
- 
-
-
- 
+// POST API
+app.post('/login/', async (req, res) => {
+  try {
+    const { name, password } = req.body;
+    const query = 'INSERT INTO login(username, password) VALUES (?, ?)';
+    const result = await db.run(query, [name, password]);
+    if (result.lastID) {
+      res.status(200).send('Login successful!');
+    } else {
+      res.status(401).send('Failed to add user');
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).send('Internal server error');
+  }
+});
